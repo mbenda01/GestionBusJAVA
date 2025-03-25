@@ -1,44 +1,66 @@
 package entity;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class Trajet {
-    private String id;
-    private Ligne ligne;
+    private String type; // Aller ou Retour
+    private Date date;
     private Bus bus;
     private Conducteur conducteur;
-    private String type; // Aller | Retour
-    private LocalDate date;
-    private int nombreTickets;
-    private int ticketsVendus;
-    private boolean valide; // Par défaut false, devient true après validation
+    private Ligne ligne;
 
-    public Trajet(String id, Ligne ligne, Bus bus, Conducteur conducteur, String type, LocalDate date,
-            int nombreTickets) {
-        this.id = id;
-        this.ligne = ligne;
-        this.bus = bus;
-        this.conducteur = conducteur;
+    public Trajet(String type, Date date, Bus bus, Conducteur conducteur, Ligne ligne) {
         this.type = type;
         this.date = date;
-        this.nombreTickets = nombreTickets;
-        this.ticketsVendus = 0;
-        this.valide = false;
+        this.bus = bus;
+        this.conducteur = conducteur;
+        this.ligne = ligne;
     }
 
-    public void validerTrajet(int ticketsVendus) {
-        this.ticketsVendus = ticketsVendus;
-        this.valide = true;
+    // Getters and Setters
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Bus getBus() {
+        return bus;
+    }
+
+    public void setBus(Bus bus) {
+        this.bus = bus;
+    }
+
+    public Conducteur getConducteur() {
+        return conducteur;
+    }
+
+    public void setConducteur(Conducteur conducteur) {
+        this.conducteur = conducteur;
+    }
+
+    public Ligne getLigne() {
+        return ligne;
+    }
+
+    public void setLigne(Ligne ligne) {
+        this.ligne = ligne;
     }
 
     @Override
     public String toString() {
-        return "🚍 Trajet [" + id + "] - " + type + " | 🗓️ " + date +
-                "\n📌 Ligne: " + ligne +
-                "\n🚌 Bus: " + bus +
-                "\n👨‍✈️ Conducteur: " + conducteur +
-                "\n🎫 Tickets disponibles: " + nombreTickets +
-                "\n✅ Tickets vendus: " + ticketsVendus +
-                "\n🟢 Statut: " + (valide ? "Validé" : "Non validé");
+        return "Trajet [Type: " + type + ", Date: " + date + ", Bus: " + bus.getImmatriculation() + ", Conducteur: "
+                + conducteur.getMatricule() + ", Ligne: " + ligne.getNumero() + "]";
     }
 }

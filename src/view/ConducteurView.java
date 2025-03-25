@@ -1,80 +1,84 @@
 package view;
 
-import entity.Conducteur;
-import service.ConducteurService;
+import services.ConducteurService;
 import java.util.Scanner;
 
 public class ConducteurView {
-    private ConducteurService conducteurService;
-    private Scanner scanner = new Scanner(System.in);
+    private static Scanner sc = new Scanner(System.in);
 
-    public ConducteurView(ConducteurService conducteurService) {
-        this.conducteurService = conducteurService;
-    }
-
-    public void afficherMenu() {
-        while (true) {
-            System.out.println("\n👨‍✈️ MENU GESTION DES CONDUCTEURS 🚍");
-            System.out.println("1️⃣ Ajouter un conducteur");
-            System.out.println("2️⃣ Lister les conducteurs");
-            System.out.println("3️⃣ Affecter un conducteur");
-            System.out.println("4️⃣ Libérer un conducteur");
-            System.out.println("0️⃣ Retour au menu principal");
-            System.out.print("👉 Choix : ");
-
-            int choix = scanner.nextInt();
-            scanner.nextLine(); // Consommer la nouvelle ligne
+    public static void afficherMenuConducteur() {
+        int choix;
+        do {
+            System.out.println("\n===== Gestion des Conducteurs =====");
+            System.out.println("1. Ajouter un conducteur");
+            System.out.println("2. Lister les conducteurs");
+            System.out.println("3. Modifier un conducteur");
+            System.out.println("4. Supprimer un conducteur");
+            System.out.println("5. Quitter");
+            System.out.print("Votre choix : ");
+            choix = sc.nextInt();
 
             switch (choix) {
                 case 1:
                     ajouterConducteur();
                     break;
                 case 2:
-                    conducteurService.listerConducteurs();
+                    listerConducteurs();
                     break;
                 case 3:
-                    affecterConducteur();
+                    modifierConducteur();
                     break;
                 case 4:
-                    libererConducteur();
+                    supprimerConducteur();
                     break;
-                case 0:
-                    return;
+                case 5:
+                    System.out.println("Retour au menu principal...");
+                    break;
                 default:
-                    System.out.println("❌ Choix invalide !");
+                    System.out.println("Choix invalide. Veuillez réessayer.");
             }
-        }
+        } while (choix != 5);
     }
 
-    private void ajouterConducteur() {
-        System.out.print("Matricule : ");
-        String matricule = scanner.nextLine();
+    private static void ajouterConducteur() {
+        sc.nextLine(); // Consommer l'entrée précédente
+        System.out.print("Matricule du conducteur : ");
+        String matricule = sc.nextLine();
+        System.out.print("Nom du conducteur : ");
+        String nom = sc.nextLine();
+        System.out.print("Prénom du conducteur : ");
+        String prenom = sc.nextLine();
+        System.out.print("Numéro de téléphone : ");
+        String telephone = sc.nextLine();
+        System.out.print("Type de permis (Lourd, Léger) : ");
+        String typePermis = sc.nextLine();
+        System.out.print("Date d'affectation : ");
+        String dateAffectation = sc.nextLine();
+        System.out.print("Statut du conducteur (Actif, En congé, Suspendu) : ");
+        String statut = sc.nextLine();
 
-        System.out.print("Nom : ");
-        String nom = scanner.nextLine();
-
-        System.out.print("Prénom : ");
-        String prenom = scanner.nextLine();
-
-        System.out.print("Téléphone : ");
-        String telephone = scanner.nextLine();
-
-        System.out.print("Type de permis (Lourd/Léger) : ");
-        String typePermis = scanner.nextLine();
-
-        Conducteur conducteur = new Conducteur(matricule, nom, prenom, telephone, typePermis);
-        conducteurService.ajouterConducteur(conducteur);
+        ConducteurService.ajouterConducteur(matricule, nom, prenom, telephone, typePermis, dateAffectation, statut);
     }
 
-    private void affecterConducteur() {
-        System.out.print("Matricule du conducteur à affecter : ");
-        String matricule = scanner.nextLine();
-        conducteurService.affecterConducteur(matricule);
+    private static void listerConducteurs() {
+        ConducteurService.listerConducteurs();
     }
 
-    private void libererConducteur() {
-        System.out.print("Matricule du conducteur à libérer : ");
-        String matricule = scanner.nextLine();
-        conducteurService.libererConducteur(matricule);
+    private static void modifierConducteur() {
+        sc.nextLine(); // Consommer l'entrée précédente
+        System.out.print("Matricule du conducteur à modifier : ");
+        String matricule = sc.nextLine();
+        System.out.print("Nouveau statut du conducteur (Actif, En congé, Suspendu) : ");
+        String newStatut = sc.nextLine();
+
+        ConducteurService.modifierConducteur(matricule, newStatut);
+    }
+
+    private static void supprimerConducteur() {
+        sc.nextLine(); // Consommer l'entrée précédente
+        System.out.print("Matricule du conducteur à supprimer : ");
+        String matricule = sc.nextLine();
+
+        ConducteurService.supprimerConducteur(matricule);
     }
 }

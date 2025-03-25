@@ -1,91 +1,78 @@
 package view;
 
-import entity.Ligne;
-import entity.Station;
-import entity.Arret;
-import service.LigneService;
+import services.LigneService;
 import java.util.Scanner;
 
 public class LigneView {
-    private LigneService ligneService;
-    private Scanner scanner = new Scanner(System.in);
+    private static Scanner sc = new Scanner(System.in);
 
-    public LigneView(LigneService ligneService) {
-        this.ligneService = ligneService;
-    }
-
-    public void afficherMenu() {
-        while (true) {
-            System.out.println("\n🚌 MENU GESTION DES LIGNES 🚍");
-            System.out.println("1️⃣ Ajouter une ligne");
-            System.out.println("2️⃣ Lister les lignes");
-            System.out.println("3️⃣ Ajouter un arrêt à une ligne");
-            System.out.println("0️⃣ Retour au menu principal");
-            System.out.print("👉 Choix : ");
-
-            int choix = scanner.nextInt();
-            scanner.nextLine(); // Consommer la nouvelle ligne
+    public static void afficherMenuLigne() {
+        int choix;
+        do {
+            System.out.println("\n===== Gestion des Lignes =====");
+            System.out.println("1. Ajouter une ligne");
+            System.out.println("2. Lister les lignes");
+            System.out.println("3. Modifier une ligne");
+            System.out.println("4. Supprimer une ligne");
+            System.out.println("5. Quitter");
+            System.out.print("Votre choix : ");
+            choix = sc.nextInt();
 
             switch (choix) {
                 case 1:
                     ajouterLigne();
                     break;
                 case 2:
-                    ligneService.listerLignes();
+                    listerLignes();
                     break;
                 case 3:
-                    ajouterArret();
+                    modifierLigne();
                     break;
-                case 0:
-                    return;
+                case 4:
+                    supprimerLigne();
+                    break;
+                case 5:
+                    System.out.println("Retour au menu principal...");
+                    break;
                 default:
-                    System.out.println("❌ Choix invalide !");
+                    System.out.println("Choix invalide. Veuillez réessayer.");
             }
-        }
+        } while (choix != 5);
     }
 
-    private void ajouterLigne() {
+    private static void ajouterLigne() {
+        sc.nextLine(); // Consommer l'entrée précédente
         System.out.print("Numéro de la ligne : ");
-        String numero = scanner.nextLine();
+        String numero = sc.nextLine();
+        System.out.print("Kilométrage de la ligne : ");
+        int kilometrage = sc.nextInt();
+        System.out.print("Tarif de la ligne : ");
+        double tarif = sc.nextDouble();
 
-        System.out.print("Nombre de kilomètres : ");
-        double km = scanner.nextDouble();
-
-        System.out.print("Tarif en FCFA : ");
-        double tarif = scanner.nextDouble();
-        scanner.nextLine(); // Consommer la nouvelle ligne
-
-        System.out.print("Numéro de la station de départ : ");
-        String numDep = scanner.nextLine();
-        System.out.print("Nom de la station de départ : ");
-        String nomDep = scanner.nextLine();
-        System.out.print("Adresse de la station de départ : ");
-        String adresseDep = scanner.nextLine();
-
-        System.out.print("Numéro de la station d'arrivée : ");
-        String numArr = scanner.nextLine();
-        System.out.print("Nom de la station d'arrivée : ");
-        String nomArr = scanner.nextLine();
-        System.out.print("Adresse de la station d'arrivée : ");
-        String adresseArr = scanner.nextLine();
-
-        Station stationDepart = new Station(numDep, nomDep, adresseDep);
-        Station stationArrivee = new Station(numArr, nomArr, adresseArr);
-
-        Ligne ligne = new Ligne(numero, km, tarif, stationDepart, stationArrivee);
-        ligneService.ajouterLigne(ligne);
+        LigneService.ajouterLigne(numero, kilometrage, tarif);
     }
 
-    private void ajouterArret() {
-        System.out.print("Numéro de la ligne : ");
-        String numeroLigne = scanner.nextLine();
+    private static void listerLignes() {
+        LigneService.listerLignes();
+    }
 
-        System.out.print("Numéro de l'arrêt : ");
-        String numArret = scanner.nextLine();
-        System.out.print("Nom de l'arrêt : ");
-        String nomArret = scanner.nextLine();
+    private static void modifierLigne() {
+        sc.nextLine(); // Consommer l'entrée précédente
+        System.out.print("Numéro de la ligne à modifier : ");
+        String numero = sc.nextLine();
+        System.out.print("Nouveau kilométrage : ");
+        int newKilometrage = sc.nextInt();
+        System.out.print("Nouveau tarif : ");
+        double newTarif = sc.nextDouble();
 
-        Arret arret = new Arret(numArret, nomArret);
-        ligneService.ajouterArretALigne(numeroLigne, arret);
+        LigneService.modifierLigne(numero, newKilometrage, newTarif);
+    }
+
+    private static void supprimerLigne() {
+        sc.nextLine(); // Consommer l'entrée précédente
+        System.out.print("Numéro de la ligne à supprimer : ");
+        String numero = sc.nextLine();
+
+        LigneService.supprimerLigne(numero);
     }
 }

@@ -1,33 +1,43 @@
 package entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Ligne {
     private String numero;
-    private double nombreKilometres;
+    private int kilometrage;
     private double tarif;
-    private Station stationDepart;
-    private Station stationArrivee;
-    private List<Arret> arrets = new ArrayList<>();
 
-    public Ligne(String numero, double nombreKilometres, double tarif, Station stationDepart, Station stationArrivee) {
+    public Ligne(String numero, int kilometrage, double tarif) {
         this.numero = numero;
-        this.nombreKilometres = nombreKilometres;
+        this.kilometrage = kilometrage;
         this.tarif = tarif;
-        this.stationDepart = stationDepart;
-        this.stationArrivee = stationArrivee;
     }
 
-    public void ajouterArret(Arret arret) {
-        arrets.add(arret);
+    // Getters and Setters
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public int getKilometrage() {
+        return kilometrage;
+    }
+
+    public void setKilometrage(int kilometrage) {
+        this.kilometrage = kilometrage;
+    }
+
+    public double getTarif() {
+        return tarif;
+    }
+
+    public void setTarif(double tarif) {
+        this.tarif = tarif;
     }
 
     @Override
     public String toString() {
-        return "Ligne " + numero + " | 📏 " + nombreKilometres + " km | 💰 Tarif : " + tarif + " FCFA\n" +
-                "🚏 Départ : " + stationDepart + "\n" +
-                "🚏 Arrivée : " + stationArrivee + "\n" +
-                "🔽 Arrets : " + arrets;
+        return "Ligne [Numéro: " + numero + ", Kilométrage: " + kilometrage + ", Tarif: " + tarif + "]";
     }
 }

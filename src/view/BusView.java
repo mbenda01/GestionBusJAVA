@@ -1,67 +1,81 @@
 package view;
 
-import entity.Bus;
-import service.BusService;
+import services.BusService;
 import java.util.Scanner;
 
 public class BusView {
-    private BusService busService;
-    private Scanner scanner = new Scanner(System.in);
+    private static Scanner sc = new Scanner(System.in);
 
-    public BusView(BusService busService) {
-        this.busService = busService;
-    }
-
-    public void afficherMenu() {
-        while (true) {
-            System.out.println("\n🚍 MENU GESTION DES BUS 🚍");
-            System.out.println("1️⃣ Ajouter un bus");
-            System.out.println("2️⃣ Lister les bus");
-            System.out.println("3️⃣ Mettre un bus hors circulation");
-            System.out.println("0️⃣ Quitter");
-            System.out.print("👉 Choix : ");
-
-            int choix = scanner.nextInt();
-            scanner.nextLine(); // Consommer la nouvelle ligne
+    public static void afficherMenuBus() {
+        int choix;
+        do {
+            System.out.println("\n===== Gestion des Bus =====");
+            System.out.println("1. Ajouter un bus");
+            System.out.println("2. Lister les bus");
+            System.out.println("3. Modifier un bus");
+            System.out.println("4. Supprimer un bus");
+            System.out.println("5. Quitter");
+            System.out.print("Votre choix : ");
+            choix = sc.nextInt();
 
             switch (choix) {
                 case 1:
                     ajouterBus();
                     break;
                 case 2:
-                    busService.listerBus();
+                    listerBuses();
                     break;
                 case 3:
-                    mettreHorsCirculation();
+                    modifierBus();
                     break;
-                case 0:
-                    System.out.println("👋 Au revoir !");
-                    return;
+                case 4:
+                    supprimerBus();
+                    break;
+                case 5:
+                    System.out.println("Retour au menu principal...");
+                    break;
                 default:
-                    System.out.println("❌ Choix invalide !");
+                    System.out.println("Choix invalide. Veuillez réessayer.");
             }
-        }
+        } while (choix != 5);
     }
 
-    private void ajouterBus() {
-        System.out.print("Immatriculation : ");
-        String immatriculation = scanner.nextLine();
-
-        System.out.print("Type (Tata/Car Rapide/DDK) : ");
-        String type = scanner.nextLine();
-
-        System.out.print("Kilométrage : ");
-        int kilometrage = scanner.nextInt();
-
-        System.out.print("Nombre de places : ");
-        int places = scanner.nextInt();
-
-        busService.ajouterBus(new Bus(immatriculation, type, kilometrage, places));
-    }
-
-    private void mettreHorsCirculation() {
+    private static void ajouterBus() {
+        sc.nextLine(); // Consommer l'entrée précédente
         System.out.print("Immatriculation du bus : ");
-        String immatriculation = scanner.nextLine();
-        busService.mettreHorsCirculation(immatriculation);
+        String immatriculation = sc.nextLine();
+        System.out.print("Type du bus (Tata, Car rapide, DDK) : ");
+        String type = sc.nextLine();
+        System.out.print("Nombre de places : ");
+        int places = sc.nextInt();
+        System.out.print("Kilométrage : ");
+        int kilometrage = sc.nextInt();
+        sc.nextLine(); // Consommer la ligne vide
+        System.out.print("Etat du bus (Actif, Hors service) : ");
+        String etat = sc.nextLine();
+
+        BusService.ajouterBus(immatriculation, type, places, kilometrage, etat);
+    }
+
+    private static void listerBuses() {
+        BusService.listerBuses();
+    }
+
+    private static void modifierBus() {
+        sc.nextLine(); // Consommer l'entrée précédente
+        System.out.print("Immatriculation du bus à modifier : ");
+        String immatriculation = sc.nextLine();
+        System.out.print("Nouveau statut du bus (Actif, Hors service) : ");
+        String newEtat = sc.nextLine();
+
+        BusService.modifierBus(immatriculation, newEtat);
+    }
+
+    private static void supprimerBus() {
+        sc.nextLine(); // Consommer l'entrée précédente
+        System.out.print("Immatriculation du bus à supprimer : ");
+        String immatriculation = sc.nextLine();
+
+        BusService.supprimerBus(immatriculation);
     }
 }

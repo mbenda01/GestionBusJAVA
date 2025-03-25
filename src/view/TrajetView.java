@@ -1,92 +1,123 @@
 package view;
 
-import entity.Trajet;
-import entity.Ligne;
-import entity.Bus;
-import entity.Conducteur;
-import service.TrajetService;
-
-import java.time.LocalDate;
+import services.TrajetService;
+import services.BusService;
+import services.ConducteurService;
+import services.LigneService;
 import java.util.Scanner;
+import java.util.Date;
+import entity.Bus; // Importer la classe Bus
+import entity.Conducteur; // Importer la classe Conducteur
+import entity.Ligne; // Importer la classe Ligne
 
 public class TrajetView {
-    private TrajetService trajetService;
-    private Scanner scanner = new Scanner(System.in);
+    private static Scanner sc = new Scanner(System.in);
 
-    public TrajetView(TrajetService trajetService) {
-        this.trajetService = trajetService;
-    }
-
-    public void afficherMenu() {
-        while (true) {
-            System.out.println("\n🛣️ MENU GESTION DES TRAJETS 🚏");
-            System.out.println("1️⃣ Planifier un trajet");
-            System.out.println("2️⃣ Lister les trajets");
-            System.out.println("3️⃣ Valider un trajet");
-            System.out.println("0️⃣ Retour au menu principal");
-            System.out.print("👉 Choix : ");
-
-            int choix = scanner.nextInt();
-            scanner.nextLine(); // Consommer la nouvelle ligne
+    public static void afficherMenuTrajet() {
+        int choix;
+        do {
+            System.out.println("\n===== Gestion des Trajets =====");
+            System.out.println("1. Ajouter un trajet");
+            System.out.println("2. Lister les trajets");
+            System.out.println("3. Modifier un trajet");
+            System.out.println("4. Supprimer un trajet");
+            System.out.println("5. Quitter");
+            System.out.print("Votre choix : ");
+            choix = sc.nextInt();
 
             switch (choix) {
                 case 1:
-                    planifierTrajet();
+                    ajouterTrajet();
                     break;
                 case 2:
-                    trajetService.listerTrajets();
+                    listerTrajets();
                     break;
                 case 3:
-                    validerTrajet();
+                    modifierTrajet();
                     break;
-                case 0:
-                    return;
+                case 4:
+                    supprimerTrajet();
+                    break;
+                case 5:
+                    System.out.println("Retour au menu principal...");
+                    break;
                 default:
-                    System.out.println("❌ Choix invalide !");
+                    System.out.println("Choix invalide. Veuillez réessayer.");
             }
+        } while (choix != 5);
+    }
+
+    private static void ajouterTrajet() {
+        sc.nextLine(); // Consommer l'entrée précédente
+        System.out.print("Type de trajet (Aller/Retour) : ");
+        String type = sc.nextLine();
+        System.out.print("Date du trajet (format YYYY-MM-DD) : ");
+        String dateStr = sc.nextLine();
+        Date date = new Date(dateStr);
+
+        // Lister les bus, conducteurs et lignes disponibles
+        BusService.listerBuses();
+        System.out.print("Immatriculation du bus : ");
+        String immatriculation = sc.nextLine();
+        Bus bus = BusService.trouverBusParImmatriculation(immatriculation);
+
+        ConducteurService.listerConducteurs();
+        System.out.print("Matricule du conducteur : ");
+        String matricule = sc.nextLine();
+        Conducteur conducteur = ConducteurService.trouverConducteurParMatricule(matricule);
+
+        LigneService.listerLignes();
+        System.out.print("Numéro de la ligne : ");
+        String numeroLigne = sc.nextLine();
+        Ligne ligne = LigneService.trouverLigneParNumero(numeroLigne);
+
+        if (bus != null && conducteur != null && ligne != null) {
+            TrajetService.ajouterTrajet(type, date, bus, conducteur, ligne);
+        } else {
+            System.out.println("Erreur dans les informations fournies.");
         }
     }
 
-    private void planifierTrajet() {
-        System.out.print("ID du trajet : ");
-        String id = scanner.nextLine();
-
-        System.out.print("Numéro de la ligne : ");
-        String numeroLigne = scanner.nextLine();
-
-        System.out.print("Immatriculation du bus : ");
-        String immatriculationBus = scanner.nextLine();
-
-        System.out.print("Matricule du conducteur : ");
-        String matriculeConducteur = scanner.nextLine();
-
-        System.out.print("Type de trajet (Aller/Retour) : ");
-        String type = scanner.nextLine();
-
-        System.out.print("Date (AAAA-MM-JJ) : ");
-        String dateStr = scanner.nextLine();
-        LocalDate date = LocalDate.parse(dateStr);
-
-        System.out.print("Nombre de tickets disponibles : ");
-        int nombreTickets = scanner.nextInt();
-        scanner.nextLine(); // Consommer la nouvelle ligne
-
-        // Remplace ces lignes avec une récupération réelle des objets
-        Ligne ligne = new Ligne(numeroLigne, 10, 500, null, null);
-        Bus bus = new Bus(immatriculationBus, "Tata", 10000, 50);
-        Conducteur conducteur = new Conducteur(matriculeConducteur, "Nom", "Prénom", "0700000000", "Lourd");
-
-        trajetService.planifierTrajet(id, ligne, bus, conducteur, type, date, nombreTickets);
+    private static void listerTrajets() {
+        TrajetService.listerTrajets();
     }
 
-    private void validerTrajet() {
-        System.out.print("ID du trajet à valider : ");
-        String id = scanner.nextLine();
+    private static void modifierTrajet() {
+        sc.nextLine(); // Consommer l'entrée précédente
+        System.out.print("Type du trajet à modifier (Aller/Retour) : ");
+        String type = sc.nextLine();
+        System.out.print("Nouvelle date du trajet (format YYYY-MM-DD) : ");
+        String dateStr = sc.nextLine();
+        Date newDate = new Date(dateStr);
 
-        System.out.print("Nombre de tickets réellement vendus : ");
-        int ticketsVendus = scanner.nextInt();
-        scanner.nextLine(); // Consommer la nouvelle ligne
+        // Lister les bus, conducteurs et lignes disponibles
+        BusService.listerBuses();
+        System.out.print("Nouvelle immatriculation du bus : ");
+        String newImmatriculation = sc.nextLine();
+        Bus newBus = BusService.trouverBusParImmatriculation(newImmatriculation);
 
-        trajetService.validerTrajet(id, ticketsVendus);
+        ConducteurService.listerConducteurs();
+        System.out.print("Nouveau matricule du conducteur : ");
+        String newMatricule = sc.nextLine();
+        Conducteur newConducteur = ConducteurService.trouverConducteurParMatricule(newMatricule);
+
+        LigneService.listerLignes();
+        System.out.print("Nouvelle ligne du trajet : ");
+        String newNumeroLigne = sc.nextLine();
+        Ligne newLigne = LigneService.trouverLigneParNumero(newNumeroLigne);
+
+        if (newBus != null && newConducteur != null && newLigne != null) {
+            TrajetService.modifierTrajet(type, newDate, newBus, newConducteur, newLigne);
+        } else {
+            System.out.println("Erreur dans les informations fournies.");
+        }
+    }
+
+    private static void supprimerTrajet() {
+        sc.nextLine(); // Consommer l'entrée précédente
+        System.out.print("Type du trajet à supprimer (Aller/Retour) : ");
+        String type = sc.nextLine();
+
+        TrajetService.supprimerTrajet(type);
     }
 }
